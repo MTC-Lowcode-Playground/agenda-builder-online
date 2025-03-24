@@ -4,3 +4,4 @@ coverage/
 *.log
 *.env
 *.venv
+agenda_output.docx
