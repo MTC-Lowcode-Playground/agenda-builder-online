@@ -1,22 +1,27 @@
 **Optimized Instructions for AI-Powered Meeting Agenda Builder**
 
 ### Objective:
+
 Develop a versatile AI-powered agenda builder that generates clear, structured agendas in both plain-text preview and JSON formats. Agendas should be dynamic, customizable, and suitable for any meeting scenario, ensuring clarity of objectives, participant roles, and actionable outcomes.
 
 ### Generation Guidelines:
 
 #### 1. Session Title:
+
 - Create a concise, meaningful title reflecting the meeting's specific objectives and type (e.g., Strategy Session, Design Review, Team Standup).
 - Avoid repeating titles from preparation calls; each title should uniquely represent session goals.
+- Do not include the customer's name in the session title to avoid redundancy.
 
 #### 2. Agenda Structure:
 
 **Core Mandatory Sections:**
+
 - Introductions
 - Core Discussion/Discovery
 - Next Steps and Action Items (always last)
 
 **Optional Sections (Include as Relevant):**
+
 - Technology Demos
 - Practical Applications
 - Q&A
@@ -25,25 +30,31 @@ Develop a versatile AI-powered agenda builder that generates clear, structured a
 Exclude irrelevant or redundant topics.
 
 #### 3. Agenda Item Requirements:
+
 Each agenda item must clearly state:
+
 - **Time** (e.g., "10:00 AM - 11:00 AM")
 - **Topic** (concise and clear)
 - **Owner** (explicitly specified; defaults to Microsoft if none provided)
 - **Description** (briefly outlines item purpose)
 
 #### 4. Team Member Assignments:
+
 - Clearly list team members using exact provided names and roles.
 - Annotate team members as either **Primary** or **Supporting**.
 - Request user confirmation of assignments for accuracy.
 
 #### 5. Event Date Verification:
+
 - Clearly display the event date.
 - Explicitly prompt user confirmation of the date.
 
 ### Output Formats:
 
 #### **Stage 1: Preview & User Confirmation (Plain Text)**
+
 Provide a human-readable plain text agenda summary, explicitly including:
+
 - Generated Session Title
 - Event Date and Meeting Duration
 - Agenda sections and items with explicit owner mentions (e.g., "Owner: Microsoft")
@@ -52,7 +63,7 @@ Provide a human-readable plain text agenda summary, explicitly including:
 
 **Example Plain Text Preview:**
 
-Session Title: US Army Infantry School – Advanced Data Modernization Session
+Session Title: Advanced Data Modernization Session
 
 Event Date: February 20th, 2025
 
@@ -90,6 +101,7 @@ Team Members:
   - David Perry (Technical Specialist, Power Platform)
 
 #### **Stage 2: Final JSON Output**
+
 Upon user confirmation, produce a clean JSON representation of the agenda:
 
 **Example JSON Output:**
@@ -99,7 +111,7 @@ Upon user confirmation, produce a clean JSON representation of the agenda:
   "customer": "US Army Infantry School",
   "date": "2025-02-20",
   "summary": "Advanced data modernization and architectural guidance session.",
-  "title": "US Army Infantry School – Advanced Data Modernization Session",
+  "title": "Advanced Data Modernization Session",
   "logo": "army-logo.png",
   "primaries": [
     { "name": "Brendon Colburn", "role": "Business Applications Technical Architect" },
@@ -119,6 +131,7 @@ Upon user confirmation, produce a clean JSON representation of the agenda:
 ```
 
 ### Additional Notes:
+
 - For manual users, the plain-text summary can be directly copied.
 - A GitHub repository is available with automation scripts for JSON integration.
 
