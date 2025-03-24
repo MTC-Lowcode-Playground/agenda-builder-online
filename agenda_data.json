@@ -1,0 +1,69 @@
+{
+    "customer": "US Army Infantry School",
+    "date": "2025-03-21",
+    "summary": "Architecture Design Session: Enhancing US Army Infantry School's Data Management and Training Efficiency",
+    "title": "Data Management and Training Efficiency",
+    "logo": "path/to/logo.png",
+    "primaries": [
+        {
+            "name": "Brendon Colburn",
+            "role": "Principal Hub Architect"
+        },
+        {
+            "name": "John Doe",
+            "role": "US Army Infantry School Representative"
+        }
+    ],
+    "supporting": [
+        {
+            "name": "Jane Smith",
+            "role": "Senior Solution Architect"
+        }, 
+        {
+            "name": "Alice Johnson",
+            "role": "Senior Data Analyst"
+        },
+        {
+            "name": "Michael Brown",
+            "role": "Senior Security Consultant"
+        }
+    ],      
+    "agenda_items": [
+        {
+            "time": "09:00 AM",
+            "owner": "Brendon Colburn",
+            "topic": "Welcome and Introductions",
+            "description": "Introduction of Microsoft team members and key stakeholders from the US Army Infantry School. Brief overview of the session's objectives and expected outcomes."
+        },
+        {
+            "time": "10:00 AM",
+            "owner": "Brendon Colburn",
+            "topic": "Discovery",
+            "description": "Discussion on the current state of data management and training processes. Identification of pain points and areas for improvement. Sharing of vision for future state and desired outcomes."
+        },
+        {
+            "time": "11:00 AM",
+            "owner": "Brendon Colburn",
+            "topic": "Microsoft Power Platform Showcase",
+            "description": "Overview of relevant technologies and solutions. Interactive discussion on use cases and practical applications."
+        },
+        {
+            "time": "12:00 PM",
+            "owner": "Brendon Colburn",
+            "topic": "Lunch Break",
+            "description": ""
+        },
+        {
+            "time": "01:00 PM",
+            "owner": "Brendon Colburn",
+            "topic": "Practical Applications and Readiness",
+            "description": "Deeper demonstrations on practical applications, processes, and readiness requirements. Discussions on security and architecture recommendations, development and custom solutions."
+        },
+        {
+            "time": "03:00 PM",
+            "owner": "Brendon Colburn",
+            "topic": "Review and Next Steps",
+            "description": "Recap of the day's discussions and key takeaways. Creation of a framework of actionable next steps for successful partnership between Microsoft and the US Army Infantry School."
+        }
+    ]
+}
