@@ -106,8 +106,14 @@ if __name__ == "__main__":
         print(f"Error loading JSON data: {e}")
         exit(1)
     
-    # Define the path to your DOCX template and the desired output document path
+    # Define the path to your DOCX template
     template_path = "DATE-CUST-TOPICAgenda.docx"
-    output_path = "agenda_output.docx"
+    
+    # Compute the output path based on the provided agenda data.
+    # This replaces spaces with underscores to form a valid file name.
+    date = agenda_data.get("date", "DATE").replace(" ", "_")
+    customer = agenda_data.get("customer", "CUST").replace(" ", "_")
+    title = agenda_data.get("title", "TOPIC").replace(" ", "_")
+    output_path = f"{date}-{customer}-{title}Agenda.docx"
     
     create_agenda_doc(agenda_data, template_path, output_path)
