@@ -7,11 +7,14 @@ This project automates the creation of detailed meeting agendas in both plain-te
 
 ## Installation
 
-Before running the script, ensure you have installed the required dependencies. In particular, install [docxtpl](https://pypi.org/project/docxtpl/) using pip:
+Before running the script, ensure you have installed the required dependencies:
 
 ```
-pip install docxtpl
+pip install docxtpl python-docx
 ```
+
+- [docxtpl](https://pypi.org/project/docxtpl/) is used for template processing
+- [python-docx](https://pypi.org/project/python-docx/) is used for document post-processing
 
 ## Data Provisioning
 

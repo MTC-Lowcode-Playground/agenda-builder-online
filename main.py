@@ -2,6 +2,8 @@ import json
 import os
 from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
+from docx import Document
+from docx.shared import Inches
 
 def create_agenda_doc(json_data, template_path, output_path):
     """
@@ -95,6 +97,43 @@ def create_agenda_doc(json_data, template_path, output_path):
     doc.save(output_path)
     print(f"Agenda document generated successfully at: {output_path}")
 
+def post_process_document(docx_path):
+    """
+    Post-processes the generated DOCX file to:
+    1. Remove the first column from agenda items table
+    2. Adjust column widths for better appearance
+    """
+    # Open the document
+    doc = Document(docx_path)
+    
+    # Find the agenda items table (assuming it's the largest table or has specific content)
+    agenda_table = None
+    for table in doc.tables:
+        # You may need to customize this logic to reliably identify your agenda table
+        if len(table.rows) > 1:  # More than just header row
+            agenda_table = table
+            break
+    
+    if agenda_table:
+        # Remove the first column (this requires XML manipulation)
+        for row in agenda_table.rows:
+            # Get the XML element for the row
+            xml_row = row._tr
+            # Remove the first cell if it exists
+            if xml_row.tc_lst:
+                xml_row.remove(xml_row.tc_lst[0])
+        
+        # Adjust the remaining columns to appropriate widths
+        # Assuming we now have 3 columns (time, owner, topic/description)
+        if len(agenda_table.columns) >= 3:
+            agenda_table.columns[0].width = Inches(0.8)   # Time column
+            agenda_table.columns[1].width = Inches(1.2)   # Owner column
+            agenda_table.columns[2].width = Inches(4.0)   # Topic/Description column
+    
+    # Save the modified document
+    doc.save(docx_path)
+    print(f"Document post-processed successfully: {docx_path}")
+
 if __name__ == "__main__":
     # Example: Load JSON from a file provided by your external system
     json_file_path = "agenda_data.json"
@@ -116,4 +155,8 @@ if __name__ == "__main__":
     title = agenda_data.get("title", "TOPIC").replace(" ", "_")
     output_path = f"{date}-{customer}-{title}Agenda.docx"
     
+    # Generate the document from template
     create_agenda_doc(agenda_data, template_path, output_path)
+    
+    # Post-process the document to fix table formatting
+    post_process_document(output_path)
