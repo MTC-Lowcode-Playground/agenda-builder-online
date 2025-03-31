@@ -4,4 +4,16 @@ coverage/
 *.log
 *.env
 *.venv
-agenda_output.docx
+
+# Exclude all DOCX files
+*.docx
+
+# But include the template file
+!DATE-CUST-TOPICAgenda.docx
+
+# Logo files
+*.png
+*.jpg
+*.jpeg
+*.gif
+logos/
