@@ -1,9 +1,55 @@
 import json
 import os
+import glob
+from difflib import get_close_matches
 from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
 from docx import Document
 from docx.shared import Inches
+
+def find_best_matching_logo(logo_path):
+    """
+    Finds the best matching logo file even if the name doesn't exactly match.
+    
+    Args:
+        logo_path (str): The logo path from JSON
+    
+    Returns:
+        str: Path to the best matching logo file or empty string if none found
+    """
+    if os.path.exists(logo_path):
+        return logo_path
+    
+    # Extract filename from path
+    filename = os.path.basename(logo_path)
+    file_base, file_ext = os.path.splitext(filename)
+    
+    # Define where to look for logos (current dir and logos dir)
+    search_paths = [
+        "*.png", "*.jpg", "*.jpeg", "*.gif",
+        "logos/*.png", "logos/*.jpg", "logos/*.jpeg", "logos/*.gif"
+    ]
+    
+    # Collect all potential logo files
+    all_logo_files = []
+    for pattern in search_paths:
+        all_logo_files.extend(glob.glob(pattern))
+    
+    if not all_logo_files:
+        return ""
+    
+    # Extract just the filenames without extensions for comparison
+    logo_basenames = [os.path.splitext(os.path.basename(f))[0] for f in all_logo_files]
+    
+    # Find closest match
+    matches = get_close_matches(file_base, logo_basenames, n=1, cutoff=0.6)
+    
+    if not matches:
+        return ""
+    
+    # Get the index of the match
+    match_idx = logo_basenames.index(matches[0])
+    return all_logo_files[match_idx]
 
 def create_agenda_doc(json_data, template_path, output_path):
     """
@@ -72,7 +118,7 @@ def create_agenda_doc(json_data, template_path, output_path):
     # Load the DOCX template
     doc = DocxTemplate(template_path)
     
-    # Prepare context from the JSON data, including the new "title", "primaries", and "supporting" fields.
+    # Prepare context from the JSON data
     context = {
         "customer": json_data.get("customer", ""),
         "date": json_data.get("date", ""),
@@ -83,12 +129,16 @@ def create_agenda_doc(json_data, template_path, output_path):
         "agenda_items": json_data.get("agenda_items", [])
     }
     
-    # If a logo image path is provided and the file exists, prepare an InlineImage.
+    # Try to find the best matching logo file
     logo_path = json_data.get("logo", "")
-    if logo_path and os.path.exists(logo_path):
-        context["logo"] = InlineImage(doc, logo_path, width=Mm(50))
+    best_match_logo = find_best_matching_logo(logo_path)
+    
+    if best_match_logo:
+        context["logo"] = InlineImage(doc, best_match_logo, width=Mm(50))
+        print(f"Using logo: {best_match_logo}")
     else:
-        context["logo"] = ""  # or set a default placeholder if desired
+        context["logo"] = ""
+        print("No matching logo found")
 
     # Render the template with the context
     doc.render(context)
