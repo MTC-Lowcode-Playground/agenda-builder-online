@@ -13,10 +13,6 @@ resources:
             value: 5000
           - name: AzureWebJobsStorage
             value: [concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-02-01').keys[0].value, ';EndpointSuffix=core.windows.net')]
-          - name: BING_SEARCH_ENDPOINT
-            value: "https://api.bing.microsoft.com/v7.0/images/search"
-          - name: KEYVAULT_NAME
-            value: "your-keyvault-name"
       httpsOnly: true
       identity:
         type: SystemAssigned
