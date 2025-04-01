@@ -70,5 +70,12 @@ agenda-builder-online
 ## Contributing
 Contributions are welcome! Please submit a pull request or open an issue for any enhancements or bug fixes.
 
+## Deployment
+Here are the steps to deploy this application to Azure Web App using GitHub Actions:
+1. In your Azure portal, create an Azure Web App.
+2. Obtain your publishing profile from the Azure Web App and store it as a GitHub secret named AZURE_PUBLISH_PROFILE.
+3. Update the 'app-name' field in the azure-deploy.yml file with your Azure Web App name.
+4. Push your changes to the main branch. The GitHub Actions workflow will build, test, and deploy your app automatically.
+
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.
