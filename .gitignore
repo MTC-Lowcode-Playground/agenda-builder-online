@@ -1,19 +1,84 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Node (if using any frontend build tools)
 node_modules/
 dist/
-coverage/
-*.log
-*.env
-*.venv
+npm-debug.log
 
-# Exclude all DOCX files
+# Testing
+coverage/
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Logs
+*.log
+logs/
+
+# Environment variables
+*.env
+.env
+.venv
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Generated files
+output/
+uploads/
+
+# Temporary files
+*.tmp
+.temp/
+tmp/
+
+# Document files
 *.docx
+*.doc
+*.pdf
+*.ppt
+*.pptx
+*.xls
+*.xlsx
 
 # But include the template file
-!DATE-CUST-TOPICAgenda.docx
+!templates/DATE-CUST-TOPICAgenda.docx
 
-# Logo files
+# Image files (except those you want to include)
 *.png
 *.jpg
 *.jpeg
 *.gif
+*.svg
 logos/
+
+# Azure
+.azure/
+azure-pipelines.yml
