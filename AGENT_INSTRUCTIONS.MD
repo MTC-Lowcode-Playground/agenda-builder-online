@@ -74,7 +74,6 @@ Upon user confirmation, produce a clean JSON representation of the agenda. Ensur
   "date": "2025-02-20",
   "summary": "Comprehensive session focused on advanced data modernization, detailed architectural guidance, interactive technology demonstrations, and strategic planning to enhance data utilization and management capabilities.",
   "title": "Advanced Data Modernization Session",
-  "logo": "army-logo.png",
   "primaries": [
     { "name": "Brendon Colburn", "role": "Business Applications Technical Architect" },
     { "name": "Larry A. Kay", "role": "Lieutenant Colonel" }
