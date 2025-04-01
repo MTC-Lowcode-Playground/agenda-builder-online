@@ -5,3 +5,5 @@ python-docx==0.8.11
 requests==2.26.0
 azure-identity==1.7.0
 azure-keyvault-secrets==4.3.0
+svglib==1.5.1
+reportlab==3.6.12

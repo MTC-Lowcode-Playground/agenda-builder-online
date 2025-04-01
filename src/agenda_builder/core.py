@@ -2,7 +2,6 @@ from docxtpl import DocxTemplate, InlineImage
 import json
 import os
 import base64
-import io
 import uuid
 import glob
 import logging
@@ -10,6 +9,7 @@ from difflib import get_close_matches
 from datetime import datetime
 from docx.shared import Mm, Inches
 from docx import Document
+from io import BytesIO
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -97,10 +97,11 @@ def create_agenda_doc(data, template_path, output_path=None, logo_path=None):
         "primaries": data.get("primaries", []),
         "supporting": data.get("supporting", []),
         "agenda_items": data.get("agenda_items", []),
-        "attendees": data.get("attendees", [])
+        "attendees": data.get("attendees", []),
+        "has_logo": False  # Default to no logo
     }
     
-    # Handle logo from web frontend
+    # Handle logo
     temp_logo_path = None
     if logo_path:
         logger.info(f"Processing logo: {logo_path[:30]}{'...' if len(logo_path) > 30 else ''}")
@@ -108,66 +109,94 @@ def create_agenda_doc(data, template_path, output_path=None, logo_path=None):
         # Create logos directory if it doesn't exist
         temp_dir = os.path.abspath(os.path.dirname(output_path) if output_path else os.path.join(os.getcwd(), 'temp'))
         os.makedirs(temp_dir, exist_ok=True)
-        temp_logo_path = os.path.join(temp_dir, f'temp_logo_{uuid.uuid4()}.png')
         
-        # Check if it's a base64 encoded image (from frontend)
-        if logo_path.startswith('data:image'):
-            try:
-                # Extract the actual base64 data after the comma
-                base64_data = logo_path.split(',')[1]
-                image_data = base64.b64decode(base64_data)
-                
-                # Save the temporary logo file
-                with open(temp_logo_path, 'wb') as f:
-                    f.write(image_data)
-                
-                context["has_logo"] = True
-                context["logo"] = InlineImage(doc, temp_logo_path, width=Mm(50))
-                logger.info(f"Using base64 logo, saved to: {temp_logo_path}")
-            except Exception as e:
-                logger.error(f"Error processing base64 logo: {str(e)}")
-                context["has_logo"] = False
-        # Check if it's a URL (also from frontend)
-        elif logo_path.startswith(('http://', 'https://')):
-            try:
-                import requests
-                response = requests.get(logo_path)
-                if response.status_code == 200:
-                    with open(temp_logo_path, 'wb') as f:
-                        f.write(response.content)
+        try:
+            # Check if it's a base64 encoded image
+            if isinstance(logo_path, str) and logo_path.startswith('data:image'):
+                try:
+                    # Extract the actual base64 data after the comma
+                    base64_data = logo_path.split(',')[1]
+                    image_data = base64.b64decode(base64_data)
                     
-                    context["has_logo"] = True
-                    context["logo"] = InlineImage(doc, temp_logo_path, width=Mm(50))
-                    logger.info(f"Using URL logo: {logo_path}")
-                else:
+                    # Save the temporary logo file
+                    temp_logo_path = os.path.join(temp_dir, f'temp_logo_{uuid.uuid4()}.png')
+                    with open(temp_logo_path, 'wb') as f:
+                        f.write(image_data)
+                    
+                    logo_path = temp_logo_path
+                    logger.info(f"Converted base64 logo to file: {logo_path}")
+                except Exception as e:
+                    logger.error(f"Error processing base64 logo: {str(e)}")
                     context["has_logo"] = False
-                    logger.error(f"Failed to download logo from URL: {response.status_code}")
-            except Exception as e:
-                logger.error(f"Error processing URL logo: {str(e)}")
-                context["has_logo"] = False
-        # Check if it's a regular file path
-        elif os.path.exists(logo_path):
-            context["has_logo"] = True
-            try:
-                context["logo"] = InlineImage(doc, logo_path, width=Mm(50))
-                logger.info(f"Using file path logo: {logo_path}")
-            except Exception as e:
-                logger.error(f"Error creating InlineImage from file: {str(e)}")
-                context["has_logo"] = False
-        else:
+            
+            # At this point, logo_path should be a file path
+            if os.path.exists(logo_path):
+                try:
+                    # Check if file is readable
+                    with open(logo_path, 'rb') as test_read:
+                        _ = test_read.read(1)
+                    
+                    # Add multiple logo format options to increase template compatibility
+                    # The template might be expecting any of these formats
+                    context["logo"] = InlineImage(doc, logo_path, width=Mm(50))
+                    context["company_logo"] = context["logo"]  # Alternative name
+                    context["logo_image"] = context["logo"]    # Another alternative
+                    context["has_logo"] = True
+                    logger.info(f"Using file path logo: {logo_path}")
+                except Exception as e:
+                    logger.error(f"Error creating InlineImage from file: {str(e)}")
+                    context["has_logo"] = False
+            else:
+                logger.warning(f"Logo path not valid or file not found: {logo_path}")
+        except Exception as e:
+            logger.error(f"Unexpected error in logo processing: {str(e)}")
             context["has_logo"] = False
-            logger.warning(f"Logo path not valid or file not found: {logo_path}")
-    else:
-        context["has_logo"] = False
-        logger.info("No logo provided")
+    
+    # Inspect the template variables to better understand what's expected
+    try:
+        # Extract template variables to see what it expects
+        template_vars = doc.get_undeclared_template_variables()
+        logger.info(f"Template variables: {template_vars}")
+        
+        # Check if template expects specific logo-related variables
+        logo_related_vars = [var for var in template_vars if 'logo' in var.lower()]
+        if logo_related_vars and context.get("has_logo"):
+            logger.info(f"Logo-related variables in template: {logo_related_vars}")
+            # Ensure all logo-related variables are set
+            for var in logo_related_vars:
+                if var not in context:
+                    context[var] = context.get("logo")
+    except Exception as e:
+        logger.warning(f"Could not inspect template variables: {str(e)}")
     
     # Render the template with the context
     try:
         doc.render(context)
         logger.info("Template rendered successfully")
     except Exception as e:
-        logger.error(f"Error rendering template: {str(e)}")
-        raise
+        logger.error("Error rendering template:")
+        logger.exception(e)  # <-- log the full traceback
+        logger.error(f"Context keys: {list(context.keys())}")
+        logger.error(f"has_logo value: {context.get('has_logo')}")
+        logger.info("Check if your DOCX template has a placeholder like {{ logo }} or {{ company_logo }}")
+        
+        # Try rendering without the logo as a fallback
+        try:
+            logger.info("Attempting to render template without logo as fallback")
+            fallback_context = context.copy()
+            # Remove logo-related keys
+            for key in list(fallback_context.keys()):
+                if 'logo' in key.lower():
+                    del fallback_context[key]
+            fallback_context["has_logo"] = False
+            
+            doc = DocxTemplate(template_path)  # Create fresh template
+            doc.render(fallback_context)
+            logger.info("Template rendered successfully without logo")
+        except Exception as fallback_error:
+            logger.error("Fallback rendering also failed:")
+            logger.exception(fallback_error)
+            raise e  # Raise the original error
     
     # Make sure we have an output path
     if not output_path:

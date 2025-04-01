@@ -5,39 +5,14 @@
     <div class="col-md-12">
         <div class="card mb-4">
             <div class="card-header">
-                <h5>Company Logo</h5>
+                <h5>Company Logo (Optional)</h5>
             </div>
             <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-md-8">
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="companyName" placeholder="Enter company name...">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button" id="findLogoBtn">
-                                    <span id="findLogoBtnText">Find Logo</span>
-                                    <span id="findLogoSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
                 <div class="row">
                     <div class="col-md-6">
-                        <div id="logoResults" class="mb-3 d-none">
-                            <h6>Found Logo:</h6>
-                            <div class="logo-suggestion-container">
-                                <img id="suggestedLogo" class="img-fluid" alt="Suggested logo">
-                                <div class="logo-actions mt-2">
-                                    <button id="useLogoBtn" class="btn btn-sm btn-success">Use This Logo</button>
-                                    <button id="rejectLogoBtn" class="btn btn-sm btn-outline-danger">Reject</button>
-                                </div>
-                            </div>
-                        </div>
-                        
                         <div class="custom-file mb-3">
                             <input type="file" class="custom-file-input" id="logoUpload" accept="image/*">
-                            <label class="custom-file-label" for="logoUpload">Or upload your own logo...</label>
+                            <label class="custom-file-label" for="logoUpload">Upload a logo image...</label>
                         </div>
                     </div>
                     <div class="col-md-6">
