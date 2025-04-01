@@ -1,3 +1,6 @@
+// Initialize CodeMirror globally
+let editor;
+
 // Document ready function
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM fully loaded');
@@ -15,6 +18,36 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Generate button handler attached');
     } else {
         console.error('Generate button not found');
+    }
+
+    // Initialize CodeMirror for JSON input
+    const jsonInput = document.getElementById('jsonInput');
+    if (jsonInput) {
+        editor = CodeMirror.fromTextArea(jsonInput, {
+            mode: 'application/json',
+            lineNumbers: true,
+            matchBrackets: true,
+            autoCloseBrackets: true,
+            theme: 'default',
+            viewportMargin: Infinity // Ensures the editor expands with content
+        });
+
+        // Add a button to format JSON
+        const formatBtn = document.createElement('button');
+        formatBtn.textContent = 'Format JSON';
+        formatBtn.className = 'btn btn-secondary mt-2';
+        formatBtn.addEventListener('click', () => {
+            try {
+                const formatted = JSON.stringify(JSON.parse(editor.getValue()), null, 4);
+                editor.setValue(formatted);
+            } catch (e) {
+                alert('Invalid JSON: ' + e.message);
+            }
+        });
+
+        // Append the button to the CodeMirror container
+        const wrapper = editor.getWrapperElement();
+        wrapper.parentNode.appendChild(formatBtn);
     }
 });
 
@@ -74,8 +107,10 @@ function generateDocument() {
     console.log('Generate document function called');
     
     try {
-        const jsonData = document.getElementById('jsonInput').value;
-        if (!jsonData) {
+        // Retrieve JSON data from the global CodeMirror editor
+        const jsonData = editor.getValue();
+        
+        if (!jsonData.trim()) {
             alert('Please enter JSON data');
             return;
         }
