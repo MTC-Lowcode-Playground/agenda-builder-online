@@ -200,11 +200,25 @@ function generateDocument() {
             // Handle direct file download
             return response.blob().then(blob => {
                 console.log('Got blob response, size:', blob.size);
+                
+                // Extract the filename from the Content-Disposition header
+                let filename = 'agenda.docx';  // Default fallback
+                const disposition = response.headers.get('Content-Disposition');
+                if (disposition) {
+                    console.log('Content-Disposition header:', disposition);
+                    // Try to extract the filename
+                    const filenameMatch = disposition.match(/filename="(.+?)"/i);
+                    if (filenameMatch && filenameMatch[1]) {
+                        filename = filenameMatch[1];
+                        console.log('Extracted filename:', filename);
+                    }
+                }
+                
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.style.display = 'none';
                 a.href = url;
-                a.download = 'agenda.docx';
+                a.download = filename;  // Use the server-provided filename
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);

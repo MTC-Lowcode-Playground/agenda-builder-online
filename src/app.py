@@ -134,29 +134,35 @@ def generate():
         else:
             # Local file serving - add some extra error handling
             try:
-                # Build a more descriptive filename
+                # Build a more descriptive filename with just customer and date
                 customer = agenda_data.get('customer', 'Customer')
-                title = agenda_data.get('title', 'Meeting')
                 
                 # Just use the date from the JSON, with a simple fallback
                 date_str = agenda_data.get('date', 'DATE')
                 
                 # Sanitize filename components
                 customer = ''.join(c if c.isalnum() or c in ' -_' else '_' for c in customer)
-                title = ''.join(c if c.isalnum() or c in ' -_' else '_' for c in title)
                 date_str = ''.join(c if c.isalnum() or c in ' -_' else '_' for c in date_str)
                 
-                # Create the filename
-                filename = f"{date_str}-{customer}-{title}Agenda.docx"
+                # Create the filename - simpler structure
+                filename = f"{date_str}-{customer}Agenda.docx"
                 
                 app.logger.info(f"Sending file with name: {filename}")
                 
-                return send_file(
-                    output_path, 
+                # Create a response object that works with all Flask versions
+                response = send_file(
+                    output_path,
                     mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                    as_attachment=True,
-                    download_name=filename
+                    as_attachment=True
                 )
+                
+                # Set the Content-Disposition header explicitly
+                response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
+                
+                # Log the actual header for debugging
+                app.logger.debug(f"Content-Disposition header: {response.headers.get('Content-Disposition')}")
+                
+                return response
             except Exception as e:
                 app.logger.error(f"Error sending file: {str(e)}")
                 return f"Error downloading document: {str(e)}", 500
