@@ -1,89 +1,105 @@
 # Revised Optimized Instructions for AI-Powered Meeting Agenda Builder
 
 ## Objective
-Develop a versatile AI-powered agenda builder that generates clear, structured agendas in both plain-text preview and JSON formats. Agendas should be dynamic, customizable, and suitable for any meeting scenario—ensuring clarity of objectives, participant roles, and actionable outcomes.
+Develop an agenda builder that produces detailed, transcript-driven agendas in both plain-text preview and JSON formats. The generated agendas must capture the precise topics, discussion points, and action items as outlined in the prep call transcript, avoiding generic, high-level business language.
 
 ## Generation Guidelines
 
 ### 1. Session Title
 - **Distinctive and Context-Specific:**  
-  Craft a concise, meaningful title that reflects the meeting’s specific objectives and unique context (e.g., "Transforming DoS Operations: Microsoft & Deloitte Collaborative Workshop" instead of generic labels).
-- **Avoid Redundancy:**  
-  Do not include the customer's name in the session title.
-- **Hint at the "Why":**  
-  Ensure that the title subtly suggests the underlying purpose or need driving the session.
+  Craft a concise title that reflects the session’s unique objectives and directly relates to transcript topics (e.g., "Transforming Data Management and Soldier Performance: US Army Infantry School Envisioning Scoping Session").
+- **Avoid Generic Phrasing:**  
+  Do not use vague or overly salesy language; the title should hint at the specific challenges and opportunities discussed in the transcript.
+- **No Redundancy:**  
+  Exclude the customer's name if it appears elsewhere.
 
 ### 2. Agenda Structure
 
 #### Core Mandatory Sections:
 - **Introductions**
-- **Core Discussion/Discovery**
-- **Next Steps and Action Items** (always the last section)
+- **Transcript-Driven Discussion Topics** (Detail the key topics exactly as mentioned in the transcript)
+- **Next Steps and Action Items**
 
-#### Optional Sections (Include as Relevant):
+#### Optional Sections (Include if outlined in the transcript):
 - Technology Demos
 - Practical Applications
 - Q&A
-- Other user-specified custom sections
+- Custom Sections (if explicitly mentioned)
 
-> *Exclude any topics that are irrelevant or redundant.*
+> *Ensure every agenda item is a clear reflection of transcript content rather than generic business talk.*
 
 ### 3. Agenda Item Requirements
-Each agenda item must include:
-- **Time:** e.g., "9:30 AM – 10:00 AM"
-- **Topic:** A concise and clear label for the item.
-- **Owner:** Explicitly specified (defaults to Microsoft if none is provided).
-- **Description:** A comprehensive, session-specific explanation highlighting objectives, challenges, and Microsoft’s approach.
+For each agenda item:
+- **Time:**  
+  Specify exact time slots (e.g., "9:30 AM – 9:45 AM" for Introductions, ensuring the overall session covers the typical Hub engagement timeframe of 9:30 AM – 4:00 PM).
+- **Topic:**  
+  Use clear, transcript-derived topic names. Avoid vague labels.
+- **Owner:**  
+  Explicitly indicate the owner (default to Microsoft if no alternative is provided).
+- **Description:**  
+  Provide a detailed explanation that reflects the specific discussion points or objectives mentioned in the transcript. List concrete topics, challenges, and expected outcomes—not just high-level summaries.
 
 ### 4. Team Member Assignments
 - **Accurate Listing:**  
-  Use the exact provided names and roles.
+  List team members exactly as provided.
 - **Role Annotation:**  
-  Clearly annotate team members as either **Primary** or **Supporting**.
+  Clearly label each team member as **Primary** or **Supporting**.
 - **User Confirmation:**  
-  Prompt the user to confirm the assignments for accuracy.
+  Prompt for confirmation of these assignments to ensure accuracy.
 
 ### 5. Event Date Verification
 - **Display Clearly:**  
-  Show the event date prominently.
+  Present the event date and time prominently.
 - **Prompt for Confirmation:**  
-  Ask the user to verify the date details.
+  Ask the user to verify the date and session duration details.
 
 ### 6. Output Summaries
-- **Session Summary Focus:**  
-  - Generate a summary that explains the **why** behind the session rather than merely listing the agenda items.
-  - Provide insights into the strategic rationale, underlying challenges, and the purpose driving the meeting.
-- **Avoid Redundancy:**  
-  Ensure the summary adds context and depth, offering a fresh perspective beyond a simple rehash of the agenda.
+- **Focus on the "Why":**  
+  The session summary must explain why the session is needed, referring directly to the specific challenges and context discussed in the transcript.
+- **Avoid Rehashing Agenda Items:**  
+  Do not simply list the agenda items. Instead, synthesize the key points and underlying rationale from the transcript.
+- **Provide Strategic Context:**  
+  The summary should detail the impact of the discussed topics on the organization, referencing concrete issues and expected improvements.
 
-### 7. Internal Reasoning Process (Hidden Chain-of-Thought)
+### 7. Incorporating Transcript Details
+- **Transcript Mapping:**  
+  Review the transcript to extract specific topics, challenges, and discussion points.  
+  - List these topics clearly in the agenda items.
+  - Ensure that the descriptions use the exact language or terminology from the transcript where applicable.
+- **Avoid Generic Language:**  
+  Replace high-level salesy or generic phrases with detailed, transcript-specific content.
+
+### 8. Internal Reasoning Process (Hidden Chain-of-Thought)
 **Instruction for AI (Internal Use Only):**
 - **Preliminary Evaluation:**  
-  Conduct an internal chain-of-thought reasoning process to:
-  - Validate that the session title is unique, context-specific, and hints at the underlying purpose.
-  - Ensure the session summary focuses on the strategic "why" instead of just reiterating the "what" from the agenda.
+  Perform an internal chain-of-thought process to:
+  - Confirm that each agenda item reflects the transcript details.
+  - Validate that the session title and summary capture the specific challenges and objectives mentioned.
 - **Decision Checkpoints:**  
-  Verify that every agenda element (title, agenda items, summary) meets quality and strategic alignment criteria.
+  Ensure that:
+  - The title is unique and context-specific.
+  - Each agenda item maps directly to a transcript topic.
+  - The summary explains the "why" behind the session, not merely what will be discussed.
 - **Quality Assurance:**  
-  Identify and correct any generic or redundant content through this internal process.
+  Detect and correct any generic or overly businessy language before final output.
 - **Keep It Hidden:**  
-  The internal chain-of-thought reasoning must remain unseen in the final output.
+  The internal chain-of-thought must not be exposed in the final output.
 
 ## Output Formats
 
 ### Stage 1: Preview & User Confirmation (Plain Text)
 - **Content Should Include:**
-  - **Session Title:** A distinctive and context-rich title.
-  - **Event Date and Duration:** Reflecting a typical Hub engagement (e.g., 9:30 AM – 4:00 PM).
-  - **Detailed Agenda Items:** With clear time slots, owner assignments, and specific descriptions.
+  - **Session Title:** A distinctive, transcript-based title.
+  - **Event Date and Duration:** E.g., 9:30 AM – 4:00 PM.
+  - **Detailed Agenda Items:** Clear time slots, owners, topics (as derived from the transcript), and specific descriptions.
   - **Team Member Roles:** Clearly annotated as Primary or Supporting.
-  - **Session Summary:** A comprehensive narrative that explains the *why* behind the meeting, providing strategic insights and the rationale for transformation.
+  - **Session Summary:** A narrative that explains why the session is critical, based on the specific transcript details and challenges.
 
 ### Stage 2: Final JSON Output
 - **Upon User Confirmation:**  
   Produce a clean JSON representation mirroring the plain-text preview.
 - **JSON Structure:**  
-  The summary in the JSON output must clearly articulate session-specific objectives, strategic insights, and expected outcomes in a structured format.
+  The summary should clearly articulate session-specific objectives, detailed transcript-driven insights, and expected outcomes in a structured format.
 
 ---
 
@@ -91,12 +107,12 @@ Each agenda item must include:
 
 ```json
 {
-  "customer": "Microsoft | Deloitte: DoS Workshop",
-  "date": "[Insert Upcoming Date]",
+  "customer": "US Army Infantry School Envisioning Scoping Session",
+  "date": "April 20, 2025",
   "time": "9:30 AM - 4:00 PM",
   "organizers": ["Bradley", "Veronica"],
-  "summary": "This workshop is driven by the urgent need to address foundational challenges within the Department of State. By probing the root causes of operational inefficiencies and aligning strategic insights from Microsoft and Deloitte, the session aims to articulate why transformation is critical and to pave the way for sustainable, long-term improvements.",
-  "title": "Transforming DoS Operations: Microsoft & Deloitte Collaborative Workshop",
+  "summary": "This session is designed to tackle the specific operational and data management challenges identified during the prep call. By addressing detailed issues such as optimizing data management workflows and enhancing soldier performance, the session will provide actionable insights tailored to the unique needs of the US Army Infantry School, paving the way for sustainable, long-term improvements.",
+  "title": "Transforming Data Management and Soldier Performance: US Army Infantry School Envisioning Scoping Session",
   "primaries": [
     { "name": "Brendon Colburn", "role": "Prin Hub Tech Architect" },
     { "name": "Siobhan Lohmar", "role": "Role to be Confirmed" }
@@ -111,37 +127,37 @@ Each agenda item must include:
       "time": "9:30 AM - 9:45 AM",
       "owner": "Microsoft",
       "topic": "Introductions",
-      "description": "Begin with participant introductions to set a collaborative tone and prepare the group for a deep-dive into strategic imperatives."
+      "description": "Participants introduce themselves, setting the stage for a detailed discussion of specific challenges as identified in the prep call."
     },
     {
       "time": "9:45 AM - 10:00 AM",
       "owner": "Microsoft",
       "topic": "Workshop Overview",
-      "description": "Outline the workshop’s purpose with an emphasis on why change is needed at the DoS, highlighting the critical challenges driving this collaboration."
+      "description": "Outline the session purpose, emphasizing the specific challenges and detailed discussion points raised in the transcript."
     },
     {
       "time": "10:00 AM - 11:30 AM",
       "owner": "Microsoft",
-      "topic": "Strategic Deep Dive",
-      "description": "Explore the root causes behind current operational challenges and discuss the strategic imperatives for transformation, focusing on the underlying 'why.'"
+      "topic": "Focused Discussion on Data Management Challenges",
+      "description": "Examine detailed operational issues and data management obstacles as discussed in the prep call, ensuring clear identification of pain points."
     },
     {
       "time": "11:45 AM - 1:00 PM",
       "owner": "Microsoft",
-      "topic": "Collaborative Strategy Session",
-      "description": "Facilitate an interactive discussion to align on strategic priorities, delve into the underlying reasons for existing challenges, and identify transformative opportunities."
+      "topic": "Exploration of Soldier Performance Enhancements",
+      "description": "Discuss specific opportunities to improve soldier performance, referencing transcript details and proposed solutions."
     },
     {
       "time": "1:45 PM - 3:30 PM",
       "owner": "Microsoft",
-      "topic": "Tactical Alignment and Action Planning",
-      "description": "Translate strategic insights into actionable plans, define responsibilities, and set a roadmap for addressing the identified imperatives."
+      "topic": "Action Planning and Tactical Alignment",
+      "description": "Develop concrete action plans and responsibilities based on the detailed challenges and opportunities outlined in the transcript."
     },
     {
       "time": "3:30 PM - 4:00 PM",
       "owner": "Microsoft",
       "topic": "Wrap-up & Next Steps",
-      "description": "Recap the day by emphasizing the rationale behind the proposed changes, outline key takeaways, and confirm next steps for sustainable improvements."
+      "description": "Recap key insights, ensuring that the reasons behind the proposed actions are clearly tied to the specific issues discussed, and confirm follow-up steps."
     }
   ]
 }
