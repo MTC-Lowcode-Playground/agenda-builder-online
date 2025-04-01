@@ -9,6 +9,7 @@ from agenda_builder.core import create_agenda_doc
 from tempfile import NamedTemporaryFile
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
+from datetime import datetime
 
 # Import mock data for local testing
 from mock_data import MOCK_LOGO_RESULTS, DEFAULT_MOCK_LOGO
@@ -84,9 +85,37 @@ def generate():
     try:
         with NamedTemporaryFile(delete=False, suffix='.docx') as temp_file:
             output_path = temp_file.name
+        
+        # Handle logo from the form
+        logo_path = None
+        logo_source = request.form.get('logoSource')
+        
+        app.logger.info(f"Logo source: {logo_source}")
+        
+        if logo_source == 'suggested':
+            # Use the suggested logo URL
+            logo_url = request.form.get('logoUrl')
+            app.logger.info(f"Using suggested logo URL: {logo_url}")
+            logo_path = logo_url
             
-        # Generate the document
-        create_agenda_doc(agenda_data, template_path, output_path)
+        elif logo_source == 'uploaded':
+            # Handle uploaded logo file
+            if 'logo' in request.files:
+                logo_file = request.files['logo']
+                if logo_file.filename:
+                    # Save the uploaded file to a temporary location
+                    with NamedTemporaryFile(delete=False, suffix='.png') as logo_temp:
+                        logo_temp_path = logo_temp.name
+                    
+                    logo_file.save(logo_temp_path)
+                    app.logger.info(f"Saved uploaded logo to: {logo_temp_path}")
+                    logo_path = logo_temp_path
+            else:
+                app.logger.warning("Logo source is 'uploaded' but no file was provided")
+        
+        # Generate the document with logo if available
+        app.logger.info(f"Calling create_agenda_doc with logo_path: {logo_path}")
+        create_agenda_doc(agenda_data, template_path, output_path, logo_path)
         
         # Verify file was created
         if not os.path.exists(output_path) or os.path.getsize(output_path) == 0:
@@ -105,11 +134,28 @@ def generate():
         else:
             # Local file serving - add some extra error handling
             try:
+                # Build a more descriptive filename
+                customer = agenda_data.get('customer', 'Customer')
+                title = agenda_data.get('title', 'Meeting')
+                
+                # Just use the date from the JSON, with a simple fallback
+                date_str = agenda_data.get('date', 'DATE')
+                
+                # Sanitize filename components
+                customer = ''.join(c if c.isalnum() or c in ' -_' else '_' for c in customer)
+                title = ''.join(c if c.isalnum() or c in ' -_' else '_' for c in title)
+                date_str = ''.join(c if c.isalnum() or c in ' -_' else '_' for c in date_str)
+                
+                # Create the filename
+                filename = f"{date_str}-{customer}-{title}Agenda.docx"
+                
+                app.logger.info(f"Sending file with name: {filename}")
+                
                 return send_file(
                     output_path, 
                     mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                     as_attachment=True,
-                    download_name=f"Agenda-{agenda_data.get('customer', 'Customer')}.docx"
+                    download_name=filename
                 )
             except Exception as e:
                 app.logger.error(f"Error sending file: {str(e)}")
