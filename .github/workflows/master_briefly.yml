@@ -64,6 +64,8 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
+      - name: Set startup command
+        run: az webapp config set --name briefly --resource-group <your-resource-group> --startup-file "gunicorn -w 4 -k uvicorn.workers.UvicornWorker app:app"
       
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
