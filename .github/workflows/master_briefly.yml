@@ -64,6 +64,11 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Set startup command
         run: az webapp config set --name briefly --resource-group BizApps-CopilotStudioExtensions --startup-file "gunicorn -w 4 -k uvicorn.workers.UvicornWorker app:app"
       
